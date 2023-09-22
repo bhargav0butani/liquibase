@@ -13,7 +13,7 @@ jobs:
         with:
           operation: 'history'
           classpath: 'changelog'
-          changelog-file: 'changelog.xml'
+          changeLogFile: 'changelog.xml'
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}
