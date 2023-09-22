@@ -1,0 +1,20 @@
+name: Rollback changelog
+
+on:  
+    workflow_dispatch:
+
+jobs:
+  rollback-to-date:
+    runs-on: ubuntu-latest
+    name: Rollback Action
+    steps:
+      - uses: actions/checkout@v2
+      - uses: liquibase/liquibase-github-action@v1
+        with:
+          operation: 'rollback-to-date'
+          classpath: 'rollback-to-date'
+          changelog-file: 'changelog.xml'
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          url: ${{ secrets.URL }}
+	        date: 2023-09-22

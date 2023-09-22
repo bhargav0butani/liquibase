@@ -1,18 +1,19 @@
-name: Update changelog
+name: History changelog
 
-on: [push]
+on:  
+    workflow_dispatch:
 
 jobs:
-  Update-liquibase-changelog:
+  History-changelog:
     runs-on: ubuntu-latest
-    name: Update Action
+    name: History Action
     steps:
       - uses: actions/checkout@v2
-      - uses: liquibase/liquibase-github-action@v2
+      - uses: liquibase/liquibase-github-action@v1
         with:
-          operation: 'update'
+          operation: 'history'
           classpath: 'changelog'
-          changeLogFile: 'changelog.xml'
+          changelog-file: 'changelog.xml'
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}
