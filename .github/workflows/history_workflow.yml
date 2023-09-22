@@ -9,7 +9,7 @@ jobs:
     name: History Action
     steps:
       - uses: actions/checkout@v2
-      - uses: liquibase/liquibase-github-action@v1
+      - uses: liquibase/liquibase-github-action@v2
         with:
           operation: 'history'
           classpath: 'changelog'
