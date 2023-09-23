@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
      inputs:
       rollback_date:
-        description: 'Date to rollback to (YYYY-MM-DD)'
+        description: 'Enter rollback date (YYYY-MM-DD)'
         required: true
 
 jobs:
