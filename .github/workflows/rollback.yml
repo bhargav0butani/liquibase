@@ -4,14 +4,14 @@ on:
     workflow_dispatch:
 
 jobs:
-  rollback-to-date:
+  Rollback:
     runs-on: ubuntu-latest
     name: Rollback Action
     steps:
       - uses: actions/checkout@v2
       - uses: liquibase/liquibase-github-action@v2
         with:
-          operation: 'rollback-to-date'
+          operation: 'rollbackToDate'
           classpath: 'changelog'
           changeLogFile: 'changelog.xml'
           username: ${{ secrets.USERNAME }}
