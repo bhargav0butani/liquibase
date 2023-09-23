@@ -2,6 +2,10 @@ name: Rollback changelog
 
 on:  
     workflow_dispatch:
+     inputs:
+      rollback_date:
+        description: 'Date to rollback to (YYYY-MM-DD)'
+        required: true
 
 jobs:
   Rollback:
@@ -17,4 +21,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}
-          date: "2023-09-22"
+          date: ${{ github.event.inputs.rollback_date }}
