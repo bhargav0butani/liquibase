@@ -1,6 +1,7 @@
 name: Update changelog
 
-on: [push]
+on:  
+    workflow_dispatch:
 
 jobs:
   Update-liquibase-changelog:
