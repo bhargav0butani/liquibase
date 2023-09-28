@@ -11,6 +11,10 @@ on:
       rollback_date:
         description: 'Enter rollback date (YYYY-MM-DD)'
         required: true
+      label:
+        description: 'Enter label'
+      context:
+        description: 'Enter context'
 
 jobs:
   Rollback:
@@ -20,8 +24,6 @@ jobs:
       name: ${{ github.event.inputs.environment }}
     steps:
       - uses: actions/checkout@v2
-      - name: Rollback TEST
-        if: github.event.inputs.environment == 'TEST'
         uses: liquibase/liquibase-github-action@v2
         with:
           operation: 'rollbackToDate'
@@ -31,25 +33,5 @@ jobs:
           password: ${{ secrets.TEST_PASSWORD }}
           url: ${{ secrets.TEST_URL }}
           date: ${{ github.event.inputs.rollback_date }}
-      - name: Rollback UAT
-        if: github.event.inputs.environment == 'UAT'
-        uses: liquibase/liquibase-github-action@v2
-        with:
-          operation: 'rollbackToDate'
-          classpath: 'changelog'
-          changeLogFile: 'changelog.xml'
-          username: ${{ secrets.UAT_USERNAME }}
-          password: ${{ secrets.UAT_PASSWORD }}
-          url: ${{ secrets.UAT_URL }}
-          date: ${{ github.event.inputs.rollback_date }}
-      - name: Rollback PROD
-        if: github.event.inputs.environment == 'PROD'
-        uses: liquibase/liquibase-github-action@v2
-        with:
-          operation: 'rollbackToDate'
-          classpath: 'changelog'
-          changeLogFile: 'changelog.xml'
-          username: ${{ secrets.PROD_USERNAME }}
-          password: ${{ secrets.PROD_PASSWORD }}
-          url: ${{ secrets.PROD_URL }}
-          date: ${{ github.event.inputs.rollback_date }}
+          label: ${{ github.event.inputs.label }}
+          context: ${{ github.event.inputs.context }}
