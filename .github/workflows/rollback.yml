@@ -16,6 +16,8 @@ jobs:
   Rollback:
     runs-on: ubuntu-latest
     name: Rollback Action
+    environment: 
+      name: ${{ github.event.inputs.environment }}
     steps:
       - uses: actions/checkout@v2
       - name: Rollback TEST
