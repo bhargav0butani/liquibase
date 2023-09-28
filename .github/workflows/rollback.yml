@@ -3,6 +3,11 @@ name: Rollback changelog
 on:  
     workflow_dispatch:
      inputs:
+      environment:
+        description: 'Select the environment'
+        type: choice
+        options: [test, uat, prod],
+        required: true
       rollback_date:
         description: 'Enter rollback date (YYYY-MM-DD)'
         required: true
@@ -18,7 +23,7 @@ jobs:
           operation: 'rollbackToDate'
           classpath: 'changelog'
           changeLogFile: 'changelog.xml'
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          url: ${{ secrets.URL }}
+          username: ${{ secrets.USERNAME.${{ github.event.inputs.environment }} }}
+          password: ${{ secrets.PASSWORD.${{ github.event.inputs.environment }} }}
+          url: ${{ secrets.URL.${{ github.event.inputs.environment }} }}
           date: ${{ github.event.inputs.rollback_date }}
