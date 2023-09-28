@@ -11,10 +11,6 @@ on:
       rollback_date:
         description: 'Enter rollback date (YYYY-MM-DD)'
         required: true
-      label:
-        description: 'Enter label'
-      context:
-        description: 'Enter context'
 
 jobs:
   Rollback:
@@ -29,9 +25,7 @@ jobs:
           operation: 'rollbackToDate'
           classpath: 'changelog'
           changeLogFile: 'changelog.xml'
-          username: ${{ secrets.TEST_USERNAME }}
-          password: ${{ secrets.TEST_PASSWORD }}
-          url: ${{ secrets.TEST_URL }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          url: ${{ secrets.URL }}
           date: ${{ github.event.inputs.rollback_date }}
-          label: ${{ github.event.inputs.label }}
-          context: ${{ github.event.inputs.context }}
