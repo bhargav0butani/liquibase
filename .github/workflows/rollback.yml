@@ -3,10 +3,10 @@ name: Rollback changelog
 on:  
     workflow_dispatch:
      inputs:
-      environment:
+     environment:
         description: 'Select the environment'
         type: choice
-        options: [test, uat, prod],
+        options: [test, uat, prod]
         required: true
       rollback_date:
         description: 'Enter rollback date (YYYY-MM-DD)'
