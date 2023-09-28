@@ -24,7 +24,7 @@ jobs:
       name: ${{ github.event.inputs.environment }}
     steps:
       - uses: actions/checkout@v2
-        uses: liquibase/liquibase-github-action@v2
+      - uses: liquibase/liquibase-github-action@v2
         with:
           operation: 'rollbackToDate'
           classpath: 'changelog'
