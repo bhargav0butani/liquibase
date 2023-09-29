@@ -11,6 +11,8 @@ on:
       rollback_date:
         description: 'Enter rollback date (YYYY-MM-DD)'
         required: true
+      contexts:
+        description: 'Enter contexts'
 
 jobs:
   Rollback:
@@ -29,4 +31,4 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}
           date: ${{ github.event.inputs.rollback_date }}
-          args: '--contexts=development'
+          args: '--contexts=${{ github.event.inputs.contexts }}'
