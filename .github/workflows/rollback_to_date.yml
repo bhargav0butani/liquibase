@@ -13,6 +13,8 @@ on:
         required: true
       contexts:
         description: 'Enter contexts'
+      label:
+        description: 'Enter label'
 
 jobs:
   Rollback:
@@ -31,4 +33,4 @@ jobs:
           url: ${{ secrets.URL }}
           date: ${{ github.event.inputs.rollback_date }}
           contextFilter: ${{ github.event.inputs.contexts }}
-          logLevel: INFO
+          labelFilter: ${{ github.event.inputs.label }}

@@ -1,4 +1,4 @@
-name: Rollback changelog
+name: Rollback
 
 on:  
     workflow_dispatch:
@@ -8,11 +8,13 @@ on:
         type: choice
         options: [TEST, UAT, PROD]
         required: true
-      rollback_date:
-        description: 'Enter rollback date (YYYY-MM-DD)'
+      tag:
+        description: 'Enter tag'
         required: true
       contexts:
         description: 'Enter contexts'
+      label:
+        description: 'Enter label'
 
 jobs:
   Rollback:
@@ -21,14 +23,14 @@ jobs:
     environment: 
       name: ${{ github.event.inputs.environment }}
     steps:
-      - uses: actions/checkout@v2
-      - uses: liquibase/liquibase-github-action@v2
+      - uses: actions/checkout@v3
+      - uses: liquibase-github-actions/rollback@v4.23.2
         with:
-          operation: 'rollbackToDate'
           classpath: 'changelog'
           changeLogFile: 'changelog.xml'
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}
-          date: ${{ github.event.inputs.rollback_date }}
-          args: '--contexts=${{ github.event.inputs.contexts }}'
+          tag: ${{ github.event.inputs.tag }}
+          contextFilter: ${{ github.event.inputs.contexts }}
+          labelFilter: ${{ github.event.inputs.label }}

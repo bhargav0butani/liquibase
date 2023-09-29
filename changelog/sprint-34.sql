@@ -1,7 +1,7 @@
 --liquibase formatted sql
 
---changeset USHJA:1 labels:sprint34.1 context:development
---comment: Creating the clinic_attendee_status type and adding new columns to the clinic_attendees table
+--changeset USHJA:LO_clinic_licence labels:LO_clinic_licence context:development
+--comment: Creating the clinic_attendee_status type and adding new columns to the clinic_attendees table ,Truncating the license_requirements table and adding new columns ,Inserting data into the license_requirements table
 --precondition-sql-check expectedResult:0 SELECT COUNT (*) FROM pg_type WHERE typname = 'clinic_attendee_status'
 CREATE TYPE clinic_attendee_status AS ENUM ('CLINICIAN', 'ATTENDEE');
 ALTER TABLE public.clinic_attendees 
@@ -9,20 +9,11 @@ ALTER TABLE public.clinic_attendees
 	ADD COLUMN IF NOT EXISTS is_license_expired boolean,
 	ADD COLUMN IF NOT EXISTS is_notebook_cost_added boolean;
 
---rollback DROP TYPE clinic_attendee_status CASCADE; ALTER TABLE public.clinic_attendees DROP COLUMN IF EXISTS attendee_status, DROP COLUMN is_license_expired, DROP COLUMN is_notebook_cost_added
-
---changeset USHJA:2 labels:sprint34.2 context:development
---comment: Truncating the license_requirements table and adding new columns
-
 TRUNCATE TABLE public.license_requirements;
 
 ALTER TABLE public.license_requirements
 	ADD COLUMN IF NOT EXISTS license_type character varying(20),
 	ADD COLUMN IF NOT EXISTS type character varying(20);
---rollback DROP TABLE license_requirements;
-
---changeset USHJA:3 labels:sprint34.3 context:development
---comment: Inserting data into the license_requirements table
 
 INSERT INTO public.license_requirements (name, license_type, type) VALUES
 		('C1 Steward', '''r''', 'license'),
@@ -41,17 +32,16 @@ INSERT INTO public.license_requirements (name, license_type, type) VALUES
 		('Jumper CD', '''R''', 'license'),
 		('Hunter Breeding', null, 'certificate');
 
+--rollback DROP TYPE clinic_attendee_status CASCADE; ALTER TABLE public.clinic_attendees DROP COLUMN IF EXISTS attendee_status, DROP COLUMN is_license_expired, DROP COLUMN is_notebook_cost_added
+--rollback DROP TABLE license_requirements;
 --rollback DELETE FROM public.license_requirements;
 
---changeset USHJA:4 labels:sprint34.4 context:development
---comment: Inserting data into the scheduler table
+--changeset USHJA:LO_clinic labels:LO_clinic_sprint34 context:development
+--comment: Inserting data into the scheduler table , Creating the clinic_attendee_licenses table and adding foreign keys, Creating the clinic_attendee_notebooks table and adding foreign keys, Creating the clinic_attendee_sections table, Altering the clinic_attendee_sections and clinics tables, and adding foreign keys, Altering the clinics_docs and clinic_sections tables, Creating the individual_shopping_cart_clinic, individual_shopping_cart_clinic_section, and individual_clinic_payment tables
 INSERT INTO public.scheduler
 (id, scheduler_name, cron, status, created_by, updated_by, description, data_source)
 VALUES(25, 'Close LO clinic registration', '1 1 1 * * *', true, 'SYSTEM', 'SYSTEM', 'This job changes the Open Registration flag to false on the close date', NULL);
---rollback DELETE FROM public.scheduler WHERE id = 23;
 
---changeset USHJA:5 labels:sprint34.5 context:development
---comment: Creating the clinic_attendee_licenses table and adding foreign keys
 CREATE TABLE IF NOT EXISTS public.clinic_attendee_licenses (
 	id serial4 NOT NULL,
 	license_requirement_id int4 NULL,
@@ -67,10 +57,7 @@ CREATE TABLE IF NOT EXISTS public.clinic_attendee_licenses (
 );
 ALTER TABLE public.clinic_attendee_licenses ADD CONSTRAINT licenses_clinic_attendee_id_fkey FOREIGN KEY (clinic_attendee_id) REFERENCES public.clinic_attendees(id) ON DELETE CASCADE;
 ALTER TABLE public.clinic_attendee_licenses ADD CONSTRAINT licenses_license_requirement_id_fkey FOREIGN KEY (license_requirement_id) REFERENCES public.license_requirements(id) ON DELETE CASCADE;
---rollback DROP TABLE public.clinic_attendee_licenses;
 
---changeset USHJA:6 labels:sprint34.6 context:development
---comment: Creating the clinic_attendee_notebooks table and adding foreign keys
 CREATE TABLE IF NOT EXISTS public.clinic_attendee_notebooks (
 	id serial4 NOT NULL,
 	"name" varchar(100) NULL,
@@ -89,10 +76,7 @@ CREATE TABLE IF NOT EXISTS public.clinic_attendee_notebooks (
 	amount int4 NULL,
 	CONSTRAINT clinic_attendee_notebooks_pkey PRIMARY KEY (id)
 );
---rollback DROP TABLE public.clinic_attendee_notebooks;
 
---changeset USHJA:7 labels:sprint34.7 context:development
---comment: Creating the clinic_attendee_sections table
 CREATE TABLE IF NOT EXISTS public.clinic_attendee_sections (
 	id serial4 NOT NULL,
 	clinic_attendee_id int4 NULL,
@@ -105,17 +89,10 @@ CREATE TABLE IF NOT EXISTS public.clinic_attendee_sections (
 	data_source varchar(50) NULL,
 	CONSTRAINT clinic_attendee_sections_pkey PRIMARY KEY (id)
 );
---rollback DROP TABLE public.clinic_attendee_sections;
 
---changeset USHJA:8 labels:sprint34.8 context:development
---comment: Altering the clinic_attendee_sections and clinics tables, and adding foreign keys
 ALTER TABLE public.clinics ADD IF NOT EXISTS notebook_cost int4 NULL;
 ALTER TABLE public.clinics ADD IF NOT EXISTS close_date date NULL;
---rollback ALTER TABLE public.clinic_attendee_sections DROP CONSTRAINT sections_clinic_attendee_id_fkey; ALTER TABLE public.clinic_attendee_sections DROP CONSTRAINT sections_clinic_section_id_fkey; ALTER TABLE public.clinics DROP COLUMN notebook_cost; ALTER TABLE public.clinics DROP COLUMN close_date;
 
-
---changeset USHJA:9 labels:sprint34.9 context:development
---comment: Altering the clinics_docs and clinic_sections tables
 ALTER TABLE public.clinics_docs ADD IF NOT EXISTS is_info_sheet bool  NULL DEFAULT false;
 ALTER TABLE public.clinics_docs ADD IF NOT EXISTS description text NULL;
 ALTER TABLE public.clinic_sections ADD IF NOT EXISTS is_allow_auditors bool NULL DEFAULT false;
@@ -124,10 +101,7 @@ alter table clinic_sections drop column IF EXISTS notebook_cost;
 ALTER TYPE public."clinic_attendee_status" ADD VALUE IF NOT EXISTS 'AUDITOR';
 ALTER TABLE public.clinics ALTER column custom_clinic_id type varchar(50);
 ALTER TABLE clinics drop constraint IF EXISTS clinics_custom_clinic_id_key;
---rollback ALTER TABLE public.clinics_docs DROP COLUMN is_info_sheet; ALTER TABLE public.clinics_docs DROP COLUMN description; ALTER TABLE public.clinic_sections DROP COLUMN is_allow_auditors; ALTER TABLE public.clinic_sections DROP COLUMN is_all_checklist_required;
 
---changeset USHJA:10 labels:sprint34.10 context:development
---comment: Creating the individual_shopping_cart_clinic, individual_shopping_cart_clinic_section, and individual_clinic_payment tables
 CREATE TABLE IF NOT EXISTS public.individual_shopping_cart_clinic
 (
 	id SERIAL PRIMARY KEY,
@@ -176,4 +150,16 @@ CREATE TABLE IF NOT EXISTS public.individual_clinic_payment
 	updated_by VARCHAR(255),
 	data_source VARCHAR(255)
 );
+--rollback DELETE FROM public.scheduler WHERE id = 23;
+
+--rollback DROP TABLE public.clinic_attendee_licenses;
+
+--rollback DROP TABLE public.clinic_attendee_notebooks;
+
+--rollback DROP TABLE public.clinic_attendee_sections;
+
+--rollback ALTER TABLE public.clinic_attendee_sections DROP CONSTRAINT sections_clinic_attendee_id_fkey; ALTER TABLE public.clinic_attendee_sections DROP CONSTRAINT sections_clinic_section_id_fkey; ALTER TABLE public.clinics DROP COLUMN notebook_cost; ALTER TABLE public.clinics DROP COLUMN close_date;
+
+--rollback ALTER TABLE public.clinics_docs DROP COLUMN is_info_sheet; ALTER TABLE public.clinics_docs DROP COLUMN description; ALTER TABLE public.clinic_sections DROP COLUMN is_allow_auditors; ALTER TABLE public.clinic_sections DROP COLUMN is_all_checklist_required;
+
 --rollback DROP TABLE IF EXISTS individual_shopping_cart_clinic CASCADE; DROP TABLE IF EXISTS individual_shopping_cart_clinic_section; DROP TABLE IF EXISTS individual_clinic_payment;
