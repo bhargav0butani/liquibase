@@ -1,0 +1,29 @@
+name: Tag database state
+
+on:  
+    workflow_dispatch:
+     inputs:
+      environment:
+        description: 'Select the environment'
+        type: choice
+        options: [TEST, UAT, PROD]
+        required: true
+      tag:
+        description: 'Enter tag to add to the database changelog table'
+        required: true
+
+jobs:
+  Update-liquibase-changelog:
+    runs-on: ubuntu-latest
+    name: Update Action
+    environment: 
+      name: ${{ github.event.inputs.environment }}
+    steps:
+     - uses: actions/checkout@v3
+     - uses: liquibase-github-actions/tag@v4.23.2
+        with:
+          tag: ${{ github.event.inputs.tag }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          url: ${{ secrets.URL }}
+          logLevel: INFO
