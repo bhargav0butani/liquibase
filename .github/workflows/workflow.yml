@@ -2,11 +2,19 @@ name: Update changelog
 
 on:  
     workflow_dispatch:
+     inputs:
+      environment:
+        description: 'Select the environment'
+        type: choice
+        options: [TEST, UAT, PROD]
+        required: true
 
 jobs:
   Update-liquibase-changelog:
     runs-on: ubuntu-latest
     name: Update Action
+    environment: 
+      name: ${{ github.event.inputs.environment }}
     steps:
       - uses: actions/checkout@v2
       - uses: liquibase/liquibase-github-action@v2

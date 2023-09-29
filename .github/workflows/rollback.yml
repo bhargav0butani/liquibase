@@ -29,3 +29,4 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}
           date: ${{ github.event.inputs.rollback_date }}
+          contexts: development
