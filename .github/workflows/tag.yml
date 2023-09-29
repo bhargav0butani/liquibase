@@ -21,9 +21,9 @@ jobs:
     steps:
      - uses: actions/checkout@v3
      - uses: liquibase-github-actions/tag@v4.23.2
-        with:
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          url: ${{ secrets.URL }}
-          tag: ${{ github.event.inputs.tag }}
-          logLevel: INFO
+       with:
+         username: ${{ secrets.USERNAME }}
+         password: ${{ secrets.PASSWORD }}
+         url: ${{ secrets.URL }}
+         tag: ${{ github.event.inputs.tag }}
+         logLevel: INFO
