@@ -1,0 +1,34 @@
+name: Rollback to date
+
+on:  
+    workflow_dispatch:
+     inputs:
+      environment:
+        description: 'Select the environment'
+        type: choice
+        options: [TEST, UAT, PROD]
+        required: true
+      rollback_date:
+        description: 'Enter rollback date (YYYY-MM-DD)'
+        required: true
+      contexts:
+        description: 'Enter contexts'
+
+jobs:
+  Rollback:
+    runs-on: ubuntu-latest
+    name: Rollback Action
+    environment: 
+      name: ${{ github.event.inputs.environment }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: liquibase-github-actions/rollback-to-date@v4.23.2
+        with:
+          classpath: 'changelog'
+          changeLogFile: 'changelog.xml'
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          url: ${{ secrets.URL }}
+          date: ${{ github.event.inputs.rollback_date }}
+          contextFilter: ${{ github.event.inputs.contexts }}
+          logLevel: INFO
