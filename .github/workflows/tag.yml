@@ -13,17 +13,17 @@ on:
         required: true
 
 jobs:
-  Update-liquibase-changelog:
+  Tag-database-state:
     runs-on: ubuntu-latest
-    name: Update Action
+    name: Tag database state Action
     environment: 
       name: ${{ github.event.inputs.environment }}
     steps:
      - uses: actions/checkout@v3
      - uses: liquibase-github-actions/tag@v4.23.2
         with:
-          tag: ${{ github.event.inputs.tag }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}
+          tag: ${{ github.event.inputs.tag }}
           logLevel: INFO

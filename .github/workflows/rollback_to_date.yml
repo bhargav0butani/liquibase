@@ -17,9 +17,9 @@ on:
         description: 'Enter label'
 
 jobs:
-  Rollback:
+  Rollback-to-date:
     runs-on: ubuntu-latest
-    name: Rollback Action
+    name: Rollback to date action
     environment: 
       name: ${{ github.event.inputs.environment }}
     steps:
