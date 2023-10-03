@@ -39,10 +39,6 @@ The Liquibase properties file is a text file that configures the Liquibase runti
 
 Please note that arguments that are entered at a command prompt override values that are specified in liquibase.properties.
 
-## More Info
-
-For more information, check out the Liquibase documentation : https://docs.liquibase.com/home.html
-
 ## Changeset Syntax
 
 Each changeset in a migration script is represented as follows:
@@ -95,3 +91,7 @@ ON UPDATE NO ACTION;
 - The comment provides a description of the changes being made in this changeset.
 - The SQL commands that will be executed when this changeset is run. They create a new table and add a foreign key constraint.
 - The rollback command specifies what should be done to undo the changes made in this changeset. In this case, it removes the foreign key constraint that was added.
+
+## More Info
+
+For more information, check out the Liquibase documentation : https://docs.liquibase.com/home.html
