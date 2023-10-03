@@ -1,4 +1,4 @@
-name: Validate
+name: Checks-run
 
 on:  
     workflow_dispatch:
@@ -10,14 +10,14 @@ on:
         required: true
 
 jobs:
-  validate:
+  Checks-run:
     runs-on: ubuntu-latest
-    name: Validate action
+    name: Checks-run action
     environment: 
       name: ${{ github.event.inputs.environment }}
     steps:
      - uses: actions/checkout@v3
-     - uses: liquibase-github-actions/validate@v4.23.2
+     - uses: liquibase-github-actions/checks-run@v4.23.2
        with:
          username: ${{ secrets.USERNAME }}
          password: ${{ secrets.PASSWORD }}
