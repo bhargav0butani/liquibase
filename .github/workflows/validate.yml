@@ -1,0 +1,25 @@
+name: Validate
+
+on:  
+    workflow_dispatch:
+     inputs:
+      environment:
+        description: 'Select the environment'
+        type: choice
+        options: [TEST, UAT, PROD]
+        required: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate action
+    environment: 
+      name: ${{ github.event.inputs.environment }}
+    steps:
+     - uses: actions/checkout@v3
+     - uses: liquibase-github-actions/validate@v4.23.2
+       with:
+         username: ${{ secrets.USERNAME }}
+         password: ${{ secrets.PASSWORD }}
+         url: ${{ secrets.URL }}
+         logLevel: INFO

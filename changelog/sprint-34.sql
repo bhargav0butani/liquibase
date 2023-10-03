@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset USHJA:LO_clinic_licence labels:LO_clinic_licence context:development
+--changeset USHJA:34.1 labels:LO_clinic_licence context:clinic
 --comment: Creating the clinic_attendee_status type and adding new columns to the clinic_attendees table ,Truncating the license_requirements table and adding new columns ,Inserting data into the license_requirements table
 --precondition-sql-check expectedResult:0 SELECT COUNT (*) FROM pg_type WHERE typname = 'clinic_attendee_status'
 CREATE TYPE clinic_attendee_status AS ENUM ('CLINICIAN', 'ATTENDEE');
@@ -31,8 +31,10 @@ INSERT INTO public.license_requirements (name, license_type, type) VALUES
 		('Jumper CD', '''r''', 'license'),
 		('Jumper CD', '''R''', 'license'),
 		('Hunter Breeding', null, 'certificate');
+--rollback DROP TYPE clinic_attendee_status CASCADE;DELETE FROM public.license_requirements;
 
---changeset USHJA:LO_clinic labels:LO_clinic_sprint34 context:development
+
+--changeset USHJA:34.2 labels:LO_clinic context:clinic
 --comment: Inserting data into the scheduler table , Creating the clinic_attendee_licenses table and adding foreign keys, Creating the clinic_attendee_notebooks table and adding foreign keys, Creating the clinic_attendee_sections table, Altering the clinic_attendee_sections and clinics tables, and adding foreign keys, Altering the clinics_docs and clinic_sections tables, Creating the individual_shopping_cart_clinic, individual_shopping_cart_clinic_section, and individual_clinic_payment tables
 
 INSERT INTO public.scheduler
@@ -147,3 +149,5 @@ CREATE TABLE IF NOT EXISTS public.individual_clinic_payment
 	updated_by VARCHAR(255),
 	data_source VARCHAR(255)
 );
+
+--rollback DROP TABLE IF EXISTS individual_shopping_cart_clinic CASCADE; DROP TABLE IF EXISTS individual_shopping_cart_clinic_section; DROP TABLE IF EXISTS individual_clinic_payment;ALTER TABLE public.clinics_docs DROP COLUMN is_info_sheet; ALTER TABLE public.clinics_docs DROP COLUMN description; ALTER TABLE public.clinic_sections DROP COLUMN is_allow_auditors; ALTER TABLE public.clinic_sections DROP COLUMN is_all_checklist_required;ALTER TABLE public.clinic_attendee_sections DROP CONSTRAINT sections_clinic_attendee_id_fkey; ALTER TABLE public.clinic_attendee_sections DROP CONSTRAINT sections_clinic_section_id_fkey; ALTER TABLE public.clinics DROP COLUMN notebook_cost; ALTER TABLE public.clinics DROP COLUMN close_date;DROP TABLE public.clinic_attendee_sections; DROP TABLE public.clinic_attendee_notebooks;DROP TABLE public.clinic_attendee_licenses;DELETE FROM public.scheduler WHERE id = 25;

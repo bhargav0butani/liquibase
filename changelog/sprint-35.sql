@@ -1,20 +1,31 @@
 --liquibase formatted sql
 
---changeset USHJA:create_table labels:Equestrian-create-table context:test
---comment: Create a new table.
-CREATE TABLE equestrian (
-  id SERIAL PRIMARY KEY,
-  first_name VARCHAR(100),
-  last_name VARCHAR(100)
-);
---rollback DROP TABLE equestrian;
+--changeset USHJA:35.1 labels:host_invoice_report_log context:report_log
+--comment: Creating table host_invoice_report_log and adding foreign key constraint.
+CREATE TABLE IF NOT EXISTS public.host_invoice_report_log
+	(
+		id SERIAL PRIMARY KEY,
+		host_application_mapper_id INTEGER,
+		program_application_id INTEGER,
+		competition_id INTEGER,
+		competition_name TEXT,
+		licensee_name TEXT,
+		comp_year INTEGER,
+		invoice_sent_date DATE,
+		invoice TEXT,
+		created_at TIMESTAMP WITH TIME ZONE,
+		updated_at TIMESTAMP WITH TIME ZONE,
+		created_by VARCHAR(255),
+		updated_by VARCHAR(255),
+		data_source VARCHAR(255)
+	);
 
---changeset USHJA:add_column labels:Equestrian-add-column context:test
---comment: Add a new column to the table.
-ALTER TABLE equestrian ADD COLUMN email VARCHAR(100);
---rollback ALTER TABLE equestrian DROP COLUMN email;
+ALTER TABLE public.host_invoice_report_log
+ADD CONSTRAINT fk_host_application_mapper_id
+FOREIGN KEY (host_application_mapper_id)
+REFERENCES public.host_application_mapper(id)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
 
---changeset USHJA:rename_column labels:Equestrian-rename-column context:test
---comment: Rename a column in the table.
-ALTER TABLE equestrian RENAME COLUMN email TO email_address;
---rollback ALTER TABLE equestrian RENAME COLUMN email_address TO email;
+--rollback ALTER TABLE public.host_invoice_report_log; DROP CONSTRAINT fk_host_application_mapper_id;
+
