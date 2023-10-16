@@ -3,6 +3,9 @@ name: Validate
 on:  
     workflow_dispatch:
      inputs:
+      changelogfile:
+        description: 'Enter changelog file name'
+        required: true
       environment:
         description: 'Select the environment'
         type: choice
@@ -22,5 +25,5 @@ jobs:
          username: ${{ secrets.USERNAME }}
          password: ${{ secrets.PASSWORD }}
          url: ${{ secrets.URL }}
-         changeLogFile: 'changelog.xml'
+         changeLogFile: ${{ github.event.inputs.changelogfile }}
          logLevel: INFO
