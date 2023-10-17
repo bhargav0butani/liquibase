@@ -3,6 +3,9 @@ name: Update changelog
 on:  
     workflow_dispatch:
      inputs:
+      changelogfile:
+        description: 'Enter changelog file name'
+        required: true
       environment:
         description: 'Select the environment'
         type: choice
@@ -21,7 +24,7 @@ jobs:
         with:
           operation: 'update'
           classpath: 'changelog'
-          changeLogFile: 'changelog.xml'
+          changeLogFile: 'changelog/${{ github.event.inputs.changelogfile }}'
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}

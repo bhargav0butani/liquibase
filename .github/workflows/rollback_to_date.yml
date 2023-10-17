@@ -3,6 +3,9 @@ name: Rollback to date
 on:  
     workflow_dispatch:
      inputs:
+      changelogfile:
+        description: 'Enter changelog file name'
+        required: true
       environment:
         description: 'Select the environment'
         type: choice
@@ -27,7 +30,7 @@ jobs:
       - uses: liquibase-github-actions/rollback-to-date@v4.23.2
         with:
           classpath: 'changelog'
-          changeLogFile: 'changelog.xml'
+          changeLogFile: 'changelog/${{ github.event.inputs.changelogfile }}'
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
           url: ${{ secrets.URL }}
