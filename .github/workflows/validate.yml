@@ -25,5 +25,5 @@ jobs:
          username: ${{ secrets.USERNAME }}
          password: ${{ secrets.PASSWORD }}
          url: ${{ secrets.URL }}
-         changeLogFile: ${{ github.event.inputs.changelogfile }}
+         changeLogFile: changelog/${{ github.event.inputs.changelogfile }}
          logLevel: INFO
