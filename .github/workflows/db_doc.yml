@@ -1,0 +1,30 @@
+name: Db-Doc
+
+on:  
+    workflow_dispatch:
+     inputs:
+      changelogfile:
+        description: 'Enter changelog file name'
+      environment:
+        description: 'Select the environment'
+        type: choice
+        options: [TEST, UAT, PROD]
+        required: true
+
+jobs:
+  Db-Doc:
+    runs-on: ubuntu-latest
+    name: Db-Doc action
+    environment: 
+      name: ${{ github.event.inputs.environment }}
+    steps:
+     - uses: actions/checkout@v3
+     - uses: liquibase-github-actions/db-doc@v4.24.0
+       with:
+         username: ${{ secrets.USERNAME }}
+         password: ${{ secrets.PASSWORD }}
+         url: ${{ secrets.URL }}
+         changeLogFile: 'changelog/${{ github.event.inputs.changelogfile }}'
+         outputDirectory: 'dbDoc'
+         headless: true
+         logLevel: INFO
